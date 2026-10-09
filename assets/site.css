@@ -214,38 +214,6 @@ tr:last-child td {
   overflow-x: auto;
   margin-top: 1.25rem;
 }
-ol.roadmap {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-  display: grid;
-  gap: 0.6rem;
-}
-ol.roadmap li {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-}
-ol.roadmap li.done {
-  border-left-color: var(--defense);
-}
-ol.roadmap li.next {
-  border-left-color: var(--attack);
-}
-.tag {
-  font-size: 0.75rem;
-  font-weight: 650;
-  color: var(--muted);
-  margin-left: 0.4rem;
-}
-li.done .tag {
-  color: var(--defense);
-}
-li.next .tag {
-  color: var(--attack);
-}
 footer {
   border-top: 1px solid var(--border);
   padding: 2rem 0 3rem;
