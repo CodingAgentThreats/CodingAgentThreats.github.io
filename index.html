@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coding Agent Threats</title>
+    <meta
+      name="description"
+      content="Evidence-linked threat models of coding-agent security research, drawn as attack overlays on standard software-development pipelines."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b42318'/%3E%3Cpath d='M7 22 L13 10 L19 18 L25 8' stroke='white' stroke-width='3' fill='none' stroke-dasharray='4 3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <style>
+      :root {
+        --bg: #f7f8fa;
+        --surface: #ffffff;
+        --text: #16191d;
+        --muted: #5a636e;
+        --border: #dde1e7;
+        --attack: #b42318;
+        --attack-soft: #fdecea;
+        --defense: #1e7a3c;
+        --accent: #1f5fbf;
+        --uncertain: #6b7280;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #121418;
+          --surface: #1b1f25;
+          --text: #e7eaee;
+          --muted: #9ca5b1;
+          --border: #313842;
+          --attack: #f2766b;
+          --attack-soft: #3a1f1d;
+          --defense: #6cc58a;
+          --accent: #7aa7f0;
+          --uncertain: #a3abb6;
+          color-scheme: dark;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--accent);
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+      header.top {
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      header.top .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-weight: 750;
+        letter-spacing: -0.01em;
+      }
+      .brand span {
+        color: var(--attack);
+      }
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+        margin-left: 1.1rem;
+        font-size: 0.95rem;
+      }
+      nav a:first-child {
+        margin-left: 0;
+      }
+      .hero {
+        padding: 4.5rem 0 2.5rem;
+      }
+      .eyebrow {
+        font-size: 0.8rem;
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--attack);
+      }
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.1rem);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        margin: 0.5rem 0 1rem;
+        max-width: 20ch;
+      }
+      .lede {
+        font-size: 1.15rem;
+        color: var(--muted);
+        max-width: 62ch;
+        margin: 0;
+      }
+      .status {
+        display: inline-block;
+        margin-top: 1.5rem;
+        font-size: 0.85rem;
+        border: 1px dashed var(--border);
+        border-radius: 999px;
+        padding: 0.25rem 0.8rem;
+        color: var(--muted);
+      }
+      figure {
+        margin: 0;
+      }
+      .shot {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        overflow: hidden;
+      }
+      .shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+        background: #fff;
+      }
+      figcaption {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-top: 0.6rem;
+      }
+      section {
+        padding: 3rem 0;
+      }
+      h2 {
+        font-size: 1.6rem;
+        letter-spacing: -0.01em;
+        margin: 0 0 0.75rem;
+      }
+      h3 {
+        font-size: 1.05rem;
+        margin: 0 0 0.35rem;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.2rem;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .marker {
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 0.4rem;
+      }
+      .marker.attack {
+        color: var(--attack);
+      }
+      .marker.defense {
+        color: var(--defense);
+      }
+      .marker.uncertain {
+        color: var(--uncertain);
+      }
+      .two {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 0.95rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.7rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        margin-top: 1.25rem;
+      }
+      ol.roadmap {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0 0;
+        display: grid;
+        gap: 0.6rem;
+      }
+      ol.roadmap li {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+      }
+      ol.roadmap li.done {
+        border-left-color: var(--defense);
+      }
+      ol.roadmap li.next {
+        border-left-color: var(--attack);
+      }
+      .tag {
+        font-size: 0.75rem;
+        font-weight: 650;
+        color: var(--muted);
+        margin-left: 0.4rem;
+      }
+      li.done .tag {
+        color: var(--defense);
+      }
+      li.next .tag {
+        color: var(--attack);
+      }
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem 0 3rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      @media (max-width: 760px) {
+        .grid3,
+        .two {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding-top: 2.5rem;
+        }
+        nav a {
+          margin-left: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <div class="brand">Coding Agent <span>Threats</span></div>
+        <nav aria-label="Sections">
+          <a href="#approach">Approach</a>
+          <a href="#examples">Examples</a>
+          <a href="#roadmap">Roadmap</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap hero">
+        <div class="eyebrow">Research project</div>
+        <h1>See exactly where an attack enters a coding agent.</h1>
+        <p class="lede">
+          We turn coding-agent security papers into comparable threat models. Each attack is drawn
+          over a standard software-development pipeline, and every step links to the passage in the
+          paper that supports it.
+        </p>
+        <span class="status">Early development · demonstrated on synthetic papers only</span>
+      </div>
+
+      <div class="wrap">
+        <figure>
+          <div class="shot">
+            <img
+              src="assets/overlay-retriever-backdoor.png"
+              width="2662"
+              height="682"
+              alt="A code-generation pipeline. A dashed red attack path runs from the attacker into the retriever's fine-tuning data, then to the retriever (marked compromised and model-persistent), the generator, a bypassed static-analysis check, generated code, and a vulnerable-code impact. The knowledge base is left untouched."
+            />
+          </div>
+          <figcaption>
+            A retriever backdoor in retrieval-augmented code generation (synthetic example). The
+            attacker poisons fine-tuning data, and a trigger phrase later activates the backdoor.
+            The knowledge base is never touched, and the diagram shows that.
+          </figcaption>
+        </figure>
+      </div>
+
+      <section id="approach">
+        <div class="wrap">
+          <h2>Why another view of agent security?</h2>
+          <p class="lede">
+            Papers on coding-agent attacks describe different workflows with different vocabulary
+            and different attacker assumptions. That makes it hard to tell whether two attacks are
+            really different, or which defenses were ever tested against which attackers.
+          </p>
+          <div class="grid3">
+            <div class="card">
+              <span class="marker attack">- - → Standard pipelines</span>
+              <h3>One layout per task</h3>
+              <p>
+                Code generation, code review, and vulnerability repair each get a versioned
+                pipeline. Standard components keep fixed positions, so attacks from different papers
+                line up for comparison.
+              </p>
+            </div>
+            <div class="card">
+              <span class="marker defense">“ ” Evidence first</span>
+              <h3>Every claim is quoted</h3>
+              <p>
+                Attacker capabilities, attack steps, impacts, and defenses each link to a verbatim
+                passage, with page and section. Each quote is checked against the parsed PDF before
+                it is accepted.
+              </p>
+            </div>
+            <div class="card">
+              <span class="marker uncertain">··· Uncertainty stays visible</span>
+              <h3>Explicit, inferred, ambiguous, not stated</h3>
+              <p>
+                What a paper leaves out is a finding, not a gap to paper over. Unstated assumptions
+                and uncertain readings stay marked, and a model is verified only after human review.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="examples">
+        <div class="wrap">
+          <h2>What a threat model looks like</h2>
+          <p class="lede">
+            Two synthetic examples, written to exercise the system. They are not real papers.
+          </p>
+          <div class="two">
+            <figure>
+              <div class="shot">
+                <img
+                  src="assets/overlay-pr-injection.png"
+                  width="2662"
+                  height="612"
+                  loading="lazy"
+                  alt="A code-review pipeline. An attacker's hidden instruction enters through the pull-request description, passes the review agent despite a bypassed provenance defense, and produces a manipulated finding that reaches the human reviewer, leading to an integrity impact."
+                />
+              </div>
+              <figcaption>
+                Code review: an instruction hidden in a pull-request description manipulates the
+                review agent. The provenance defense the paper evaluated is shown as bypassed.
+              </figcaption>
+            </figure>
+            <figure>
+              <div class="shot">
+                <img
+                  src="assets/evidence-panel.png"
+                  width="2808"
+                  height="866"
+                  loading="lazy"
+                  alt="The attack-path list beside an evidence panel showing the selected step, its supporting claim marked explicit with confidence 0.90, and the quoted sentence with its page and section."
+                />
+              </div>
+              <figcaption>
+                Selecting a step opens its evidence: the normalized claim, its status and
+                confidence, and the quoted sentence with page and section.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Incident catalogs and taxonomies</th>
+                  <th scope="col">This project</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Unit of analysis</td>
+                  <td>An event or a category label</td>
+                  <td>A threat model: attacker, capabilities, ordered attack path, targets, defenses, assumptions</td>
+                </tr>
+                <tr>
+                  <td>Support for each claim</td>
+                  <td>A link to the source</td>
+                  <td>A verbatim quote with page and section, checked against the paper</td>
+                </tr>
+                <tr>
+                  <td>Uncertainty</td>
+                  <td>Usually implicit</td>
+                  <td>Explicit, inferred, ambiguous, or not stated, kept visible</td>
+                </tr>
+                <tr>
+                  <td>Comparison</td>
+                  <td>By tag</td>
+                  <td>Attacks overlaid on the same pipeline layout</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap">
+        <div class="wrap">
+          <h2>Roadmap</h2>
+          <p class="lede">
+            The workflow runs locally today. A public, read-only atlas of verified threat models
+            from real papers will be published here once the corpus has been reviewed.
+          </p>
+          <ol class="roadmap">
+            <li class="done">
+              <strong>Schemas and pipeline templates</strong><span class="tag">done</span><br />
+              Versioned templates for code generation, code review, and vulnerability repair.
+            </li>
+            <li class="done">
+              <strong>Upload, parsing, manual threat models, attack overlays</strong
+              ><span class="tag">done</span><br />
+              Page-aware PDF parsing, validated and versioned threat models, review and
+              verification, and evidence-linked diagrams.
+            </li>
+            <li class="next">
+              <strong>End-to-end testing and hardening</strong><span class="tag">next</span>
+            </li>
+            <li>
+              <strong>Side-by-side comparison and cross-paper analysis</strong><br />
+              Which components get attacked, which defenses were tested against which attackers,
+              and which assumptions papers leave unstated.
+            </li>
+            <li>
+              <strong>Real corpus with assisted extraction</strong><br />
+              Machine-drafted, human-verified threat models of published coding-agent security
+              papers.
+            </li>
+            <li>
+              <strong>Public atlas and dataset</strong><br />
+              Browsable threat models and a versioned, citable dataset.
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        Coding Agent Threats · a research project on the security of AI coding agents. Diagrams on
+        this page come from synthetic examples, not from published papers.
+      </div>
+    </footer>
+  </body>
+</html>
