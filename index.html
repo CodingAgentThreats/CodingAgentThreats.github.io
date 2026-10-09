@@ -308,7 +308,7 @@
             <img
               src="assets/overlay-retriever-backdoor.png"
               width="2662"
-              height="682"
+              height="724"
               alt="A code-generation pipeline. A dashed red attack path runs from the attacker into the retriever's fine-tuning data, then to the retriever (marked compromised and model-persistent), the generator, a bypassed static-analysis check, generated code, and a vulnerable-code impact. The knowledge base is left untouched."
             />
           </div>
@@ -371,14 +371,15 @@
                 <img
                   src="assets/overlay-pr-injection.png"
                   width="2662"
-                  height="612"
+                  height="650"
                   loading="lazy"
                   alt="A code-review pipeline. An attacker's hidden instruction enters through the pull-request description, passes the review agent despite a bypassed provenance defense, and produces a manipulated finding that reaches the human reviewer, leading to an integrity impact."
                 />
               </div>
               <figcaption>
-                Code review: an instruction hidden in a pull-request description manipulates the
-                review agent. The provenance defense the paper evaluated is shown as bypassed.
+                Code review: an instruction hidden in a pull-request description is assembled into
+                the review input and manipulates the review agent. The provenance defense the paper
+                evaluated is shown as bypassed.
               </figcaption>
             </figure>
             <figure>
@@ -452,16 +453,18 @@
               Page-aware PDF parsing, validated and versioned threat models, review and
               verification, and evidence-linked diagrams.
             </li>
+            <li class="done">
+              <strong>End-to-end testing and hardening</strong><span class="tag">done</span>
+            </li>
+            <li class="done">
+              <strong>Side-by-side comparison and cross-paper analysis</strong
+              ><span class="tag">done</span><br />
+              Aligned overlays that separate real differences from what a paper leaves unstated;
+              which components get attacked, which defenses were tested against which attackers,
+              and which assumptions papers omit.
+            </li>
             <li class="next">
-              <strong>End-to-end testing and hardening</strong><span class="tag">next</span>
-            </li>
-            <li>
-              <strong>Side-by-side comparison and cross-paper analysis</strong><br />
-              Which components get attacked, which defenses were tested against which attackers,
-              and which assumptions papers leave unstated.
-            </li>
-            <li>
-              <strong>Real corpus with assisted extraction</strong><br />
+              <strong>Real corpus with assisted extraction</strong><span class="tag">next</span><br />
               Machine-drafted, human-verified threat models of published coding-agent security
               papers.
             </li>
